@@ -11,7 +11,7 @@ rec {
     binaryName = pname;
     src = fetchurl {
       url = "mirror://mozilla/thunderbird/releases/${version}/source/thunderbird-${version}.source.tar.xz";
-      sha512 = "4ae3f216833aec55421f827d55bc1b5fc2f0ad4fefecb27724a5be3318c351df24d30a4897b924e733ed2e3995be284b6d135049d46001143fb1c961fefc1830";
+      hash = "sha512-SuPyFoM67FVCH4J9VbwbX8LwrU/v7LJ3JKW+MxjDUd8k0wpIl7kk5zPtLjmVvihLbRNQSdRgARQ/sclh/vwYMA==";
     };
     extraPatches = [
       # The file to be patched is different from firefox's `no-buildconfig-ffx90.patch`.
@@ -22,6 +22,7 @@ rec {
       changelog = "https://www.thunderbird.net/en-US/thunderbird/${version}/releasenotes/";
       description = "A full-featured e-mail client";
       homepage = "https://thunderbird.net/";
+      mainProgram = "thunderbird";
       maintainers = with maintainers; [ eelco lovesegfault pierron vcunat ];
       platforms = platforms.unix;
       badPlatforms = platforms.darwin;
@@ -42,13 +43,13 @@ rec {
 
   thunderbird-115 = (buildMozillaMach rec {
     pname = "thunderbird";
-    version = "115.1.1";
+    version = "115.2.3";
     application = "comm/mail";
     applicationName = "Mozilla Thunderbird";
     binaryName = pname;
     src = fetchurl {
       url = "mirror://mozilla/thunderbird/releases/${version}/source/thunderbird-${version}.source.tar.xz";
-      sha512 = "26f69dded43bd24ffce9acb0de204bef8c10c8df3cb82b33594d035e41179cb7450cb7c10470bfc92a933c1d801fb968049ea8a17d838d16de9973f5dddff9fc";
+      sha512 = "983547b2be67ffbe7727efa50bd925f576ec19bcfcf940d5d36def19aebea27494b3af0a37756a441b544ebbca0cf546fcaf8737e76a859b4d860c8294bba1dc";
     };
     extraPatches = [
       # The file to be patched is different from firefox's `no-buildconfig-ffx90.patch`.
@@ -59,6 +60,7 @@ rec {
       changelog = "https://www.thunderbird.net/en-US/thunderbird/${version}/releasenotes/";
       description = "A full-featured e-mail client";
       homepage = "https://thunderbird.net/";
+      mainProgram = "thunderbird";
       maintainers = with maintainers; [ eelco lovesegfault pierron vcunat ];
       platforms = platforms.unix;
       badPlatforms = platforms.darwin;

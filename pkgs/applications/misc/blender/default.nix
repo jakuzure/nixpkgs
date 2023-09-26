@@ -28,11 +28,11 @@ let
 in
 stdenv.mkDerivation rec {
   pname = "blender";
-  version = "3.6.0";
+  version = "3.6.3";
 
   src = fetchurl {
     url = "https://download.blender.org/source/${pname}-${version}.tar.xz";
-    hash = "sha256-SzdWyzdGhsaesv1VX5ZUfUnLHvRvW8buJTlOVxz6yOk=";
+    hash = "sha256-iRIwPrvPHwiIxHr7hpmG6NjS/liJkxcAgrzlk8LEFPg=";
   };
 
   patches = [
@@ -79,7 +79,7 @@ stdenv.mkDerivation rec {
     ++ lib.optional cudaSupport cudaPackages.cudatoolkit
     ++ lib.optional colladaSupport opencollada
     ++ lib.optional spaceNavSupport libspnav;
-  pythonPath = with python310Packages; [ numpy requests ];
+  pythonPath = with python310Packages; [ numpy requests zstandard ];
 
   postPatch = ''
   '' +

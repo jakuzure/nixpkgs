@@ -10,20 +10,23 @@
 , Security
 , libiconv
 , installShellFiles
+  # once eza upstream gets support for setting up a compatibilty symlink for exa, we should change
+  # the handling here from postInstall to passing the required argument to the builder.
+, exaAlias ? true
 }:
 
 rustPlatform.buildRustPackage rec {
   pname = "eza";
-  version = "0.10.7";
+  version = "0.13.1";
 
   src = fetchFromGitHub {
     owner = "eza-community";
     repo = "eza";
     rev = "v${version}";
-    hash = "sha256-f8js+zToP61lgmxucz2gyh3uRZeZSnoxS4vuqLNVO7c=";
+    hash = "sha256-/Aqt4TjXAJCF6woyJ90lbVt0eN1QuPWk9A8RhggKHJk=";
   };
 
-  cargoHash = "sha256-G3zNv8pG9uS12PsBug51RaS9Hx0sGHHnVEF4bHb+v18=";
+  cargoHash = "sha256-ofB61CsXH+CxnuWBbwUgUbBiF5bg35swxcFpVOzDN9I=";
 
   nativeBuildInputs = [ cmake pkg-config installShellFiles pandoc ];
   buildInputs = [ zlib ]
@@ -43,6 +46,8 @@ rustPlatform.buildRustPackage rec {
       --bash completions/bash/eza \
       --fish completions/fish/eza.fish \
       --zsh completions/zsh/_eza
+  '' + lib.optionalString exaAlias ''
+    ln -s eza $out/bin/exa
   '';
 
   meta = with lib; {
@@ -56,7 +61,10 @@ rustPlatform.buildRustPackage rec {
       written in Rust, so it’s small, fast, and portable.
     '';
     homepage = "https://github.com/eza-community/eza";
+    changelog = "https://github.com/eza-community/eza/releases/tag/v${version}";
     license = licenses.mit;
-    maintainers = with maintainers; [ cafkafk ];
+    mainProgram = "eza";
+    maintainers = with maintainers; [ cafkafk _9glenda ];
+    platforms = platforms.unix ++ platforms.windows;
   };
 }
