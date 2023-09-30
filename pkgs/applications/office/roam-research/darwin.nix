@@ -11,10 +11,16 @@ stdenv.mkDerivation rec {
 
   sourceRoot = "${appName}.app";
 
-  buildInputs = [ undmg ];
+  nativeBuildInputs = [ undmg ];
   installPhase = ''
+    runHook preInstall
+
     mkdir -p "$out/Applications/${appName}.app"
     cp -R . "$out/Applications/${appName}.app"
+
+    mkdir -p $out/bin
+    ln -s "$out/Applications/${appName}.app/Contents/MacOS/${appName}" "$out/bin/${appName}"
+    runHook postInstall
   '';
 
   meta = with lib; {
