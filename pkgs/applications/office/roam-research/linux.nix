@@ -5,6 +5,8 @@
 , udev, }:
 
 let
+  common = import ./common.nix { inherit fetchurl; };
+  inherit (stdenv.hostPlatform) system;
   libPath = lib.makeLibraryPath [
     alsa-lib
     atk
@@ -39,22 +41,10 @@ let
     udev
   ];
 in stdenv.mkDerivation rec {
-  pname = "roam-research";
-  version = "0.0.18";
-
-  src = fetchurl {
-    url =
-      "https://roam-electron-deploy.s3.us-east-2.amazonaws.com/${pname}_${version}_amd64.deb";
-    sha256 = "sha256-veDWBFZbODsdaO1UdfuC4w6oGCkeVBe+fqKn5XVHKDQ=";
-  };
+  inherit (common) pname version;
+  src = common.sources.${system} or (throw "Source for ${pname} is not available for ${system}");
 
   nativeBuildInputs = [ dpkg ];
-
-  unpackPhase = ''
-    mkdir pkg
-    dpkg-deb -x $src pkg
-    sourceRoot=pkg
-  '';
 
   installPhase = ''
     mkdir -p "$out/bin"
