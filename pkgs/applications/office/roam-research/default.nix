@@ -1,5 +1,8 @@
-{ stdenv, callPackage }:
+{ stdenv, callPackage, ... }@args:
+let
+  extraArgs = removeAttrs args [ "callPackage" ];
+in
 if stdenv.isDarwin then
-  callPackage ./darwin.nix { }
+  callPackage ./darwin.nix (extraArgs // { })
 else
-  callPackage ./linux.nix { }
+  callPackage ./linux.nix (extraArgs // { })

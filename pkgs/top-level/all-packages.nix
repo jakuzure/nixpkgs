@@ -12593,10 +12593,7 @@ with pkgs;
 
   rnv = callPackage ../tools/text/xml/rnv { };
 
-  # Using import because otherwise `.override` would override the `default.nix` arguments.
-  roam-research = import ../applications/office/roam-research {
-      inherit stdenv callPackage;
-    };
+  roam-research = callPackage ../applications/office/roam-research { };
 
   rosie = callPackage ../tools/text/rosie { };
 
