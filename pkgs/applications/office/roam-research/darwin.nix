@@ -9,14 +9,14 @@ stdenv.mkDerivation rec {
 
   appName = "Roam Research";
 
-  sourceRoot = "${appName}.app";
+  sourceRoot = ".";
 
   nativeBuildInputs = [ undmg ];
   installPhase = ''
     runHook preInstall
 
-    mkdir -p "$out/Applications/${appName}.app"
-    cp -R . "$out/Applications/${appName}.app"
+    mkdir -p "$out/Applications"
+    cp -R *.app "$out/Applications"
 
     mkdir -p $out/bin
     ln -s "$out/Applications/${appName}.app/Contents/MacOS/${appName}" "$out/bin/${appName}"
@@ -24,7 +24,7 @@ stdenv.mkDerivation rec {
   '';
 
   meta = with lib; {
-    description = "A note-taking tool for networked thought.";
+    description = "A note-taking tool for networked thought";
     homepage = "https://roamresearch.com/";
     maintainers = with lib.maintainers; [ dbalan ];
     sourceProvenance = with sourceTypes; [ binaryNativeCode ];
