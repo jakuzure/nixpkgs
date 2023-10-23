@@ -33916,6 +33916,8 @@ with pkgs;
 
   nerd-font-patcher = callPackage ../applications/misc/nerd-font-patcher { };
 
+  net-news-wire = callPackage ../applications/networking/feedreaders/net-news-wire { };
+
   netmaker = callPackage ../applications/networking/netmaker {subPackages = ["."];};
   netmaker-full = callPackage ../applications/networking/netmaker { };
 
