@@ -101,24 +101,61 @@ genericBuild
 
 ### Building a `stdenv` package in `nix-shell` {#sec-building-stdenv-package-in-nix-shell}
 
-To build a `stdenv` package in a [`nix-shell`](https://nixos.org/manual/nix/unstable/command-ref/nix-shell.html), use
+To build a `stdenv` package in a [`nix-shell`](https://nixos.org/manual/nix/unstable/command-ref/nix-shell.html), enter a shell, find the [phases](#sec-stdenv-phases) you wish to build, then invoke `genericBuild` manually:
+
+Go to an empty directory, invoke `nix-shell` with the desired package, and from inside the shell, set the output variables to a writable directory:
 
 ```bash
+cd "$(mktemp -d)"
 nix-shell '<nixpkgs>' -A some_package
-eval "${unpackPhase:-unpackPhase}"
-cd $sourceRoot
-eval "${patchPhase:-patchPhase}"
-eval "${configurePhase:-configurePhase}"
-eval "${buildPhase:-buildPhase}"
+export out=$(pwd)/out
+```
+
+Next, invoke the desired parts of the build.
+First, run the phases that generate a working copy of the sources, which will change directory to the sources for you:
+
+```bash
+phases="${prePhases[*]:-} unpackPhase patchPhase" genericBuild
+```
+
+Then, run more phases up until the failure is reached.
+For example, if the failure is in the build phase, the following phases would be required:
+
+```bash
+phases="${preConfigurePhases[*]:-} configurePhase ${preBuildPhases[*]:-} buildPhase" genericBuild
+```
+
+Re-run a single phase as many times as necessary to examine the failure like so:
+
+```bash
+phases="buildPhase" genericBuild
 ```
 
 To modify a [phase](#sec-stdenv-phases), first print it with
+
+```bash
+echo "$buildPhase"
+```
+
+Or, if that is empty, for instance, if it is using a function:
 
 ```bash
 type buildPhase
 ```
 
 then change it in a text editor, and paste it back to the terminal.
+
+::: {.note}
+This method may have some inconsistencies in environment variables and behaviour compared to a normal build within the [Nix build sandbox](https://nixos.org/manual/nix/unstable/language/derivations#builder-execution).
+The following is a non-exhaustive list of such differences:
+
+- `TMP`, `TMPDIR`, and similar variables likely point to non-empty directories that the build might conflict with files in.
+- Output store paths are not writable, so the variables for outputs need to be overridden to writable paths.
+- Other environment variables may be inconsistent with a `nix-build` either due to `nix-shell`'s initialization script or due to the use of `nix-shell` without the `--pure` option.
+
+If the build fails differently inside the shell than in the sandbox, consider using [`breakpointHook`](#breakpointhook) and invoking `nix-build` instead.
+The [`--keep-failed`](https://nixos.org/manual/nix/unstable/command-ref/conf-file#opt--keep-failed) option for `nix-build` may also be useful to examine the build directory of a failed build.
+:::
 
 ## Tools provided by `stdenv` {#sec-tools-of-stdenv}
 
@@ -991,13 +1028,56 @@ Hook executed at the end of the fixup phase.
 
 If set to `true`, the standard environment will enable debug information in C/C++ builds. After installation, the debug information will be separated from the executables and stored in the output named `debug`. (This output is enabled automatically; you don’t need to set the `outputs` attribute explicitly.) To be precise, the debug information is stored in `debug/lib/debug/.build-id/XX/YYYY…`, where \<XXYYYY…\> is the \<build ID\> of the binary — a SHA-1 hash of the contents of the binary. Debuggers like GDB use the build ID to look up the separated debug information.
 
-For example, with GDB, you can add
+:::{.example #ex-gdb-debug-symbols-socat}
 
-```
-set debug-file-directory ~/.nix-profile/lib/debug
+# Enable debug symbols for use with GDB
+
+To make GDB find debug information for the `socat` package and its dependencies, you can use the following `shell.nix`:
+
+```nix
+let
+  pkgs = import ./. {
+    config = {};
+    overlays = [
+      (final: prev: {
+        ncurses = prev.ncurses.overrideAttrs { separateDebugInfo = true; };
+        readline = prev.readline.overrideAttrs { separateDebugInfo = true; };
+      })
+    ];
+  };
+
+  myDebugInfoDirs = pkgs.symlinkJoin {
+    name = "myDebugInfoDirs";
+    paths = with pkgs; [
+      glibc.debug
+      ncurses.debug
+      openssl.debug
+      readline.debug
+    ];
+  };
+in
+  pkgs.mkShell {
+
+    NIX_DEBUG_INFO_DIRS = "${pkgs.lib.getLib myDebugInfoDirs}/lib/debug";
+
+    packages = [
+      pkgs.gdb
+      pkgs.socat
+    ];
+
+    shellHook = ''
+      ${pkgs.lib.getBin pkgs.gdb}/bin/gdb ${pkgs.lib.getBin pkgs.socat}/bin/socat
+    '';
+  }
 ```
 
-to `~/.gdbinit`. GDB will then be able to find debug information installed via `nix-env -i`.
+This setup works as follows:
+- Add [`overlays`](#chap-overlays) to the package set, since debug symbols are disabled for `ncurses` and `readline` by default.
+- Create a derivation to combine all required debug symbols under one path with [`symlinkJoin`](#trivial-builder-symlinkJoin).
+- Set the environment variable `NIX_DEBUG_INFO_DIRS` in the shell. Nixpkgs patches `gdb` to use it for looking up debug symbols.
+- Run `gdb` on the `socat` binary on shell startup in the [`shellHook`](#sec-pkgs-mkShell). Here we use [`lib.getBin`](#function-library-lib.attrsets.getBin) to ensure that the correct derivation output is selected rather than the default one.
+
+:::
 
 ### The installCheck phase {#ssec-installCheck-phase}
 
@@ -1478,7 +1558,7 @@ This flag can break dynamic shared object loading. For instance, the module syst
 
 #### `bindnow` {#bindnow}
 
-Adds the `-z bindnow` linker option. During program load, all dynamic symbols are resolved, allowing for the complete GOT to be marked read-only (due to `relro`). This prevents GOT overwrite attacks. For very large applications, this can incur some performance loss during initial load while symbols are resolved, but this shouldn’t be an issue for daemons.
+Adds the `-z now` linker option. During program load, all dynamic symbols are resolved, allowing for the complete GOT to be marked read-only (due to `relro`). This prevents GOT overwrite attacks. For very large applications, this can incur some performance loss during initial load while symbols are resolved, but this shouldn’t be an issue for daemons.
 
 This flag can break dynamic shared object loading. For instance, the module systems of Xorg and PHP are incompatible with this flag. Programs incompatible with this flag often fail at runtime due to missing symbols, like:
 

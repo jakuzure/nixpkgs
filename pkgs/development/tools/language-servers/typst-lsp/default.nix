@@ -7,6 +7,8 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "typst-lsp";
+  # Please update the corresponding vscode extension when updating
+  # this derivation.
   version = "0.10.1";
 
   src = fetchFromGitHub {
@@ -42,6 +44,7 @@ rustPlatform.buildRustPackage rec {
   meta = with lib; {
     description = "A brand-new language server for Typst";
     homepage = "https://github.com/nvarner/typst-lsp";
+    mainProgram = "typst-lsp";
     changelog = "https://github.com/nvarner/typst-lsp/releases/tag/${src.rev}";
     license = with licenses; [ asl20 mit ];
     maintainers = with maintainers; [ figsoda GaetanLepage ];

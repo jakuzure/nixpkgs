@@ -25,10 +25,11 @@
 , xorgproto
 , coreutils
 # build options
-, threadSupport ? stdenv.hostPlatform.isx86
-, x11Support ? stdenv.hostPlatform.isx86
+, threadSupport ? (stdenv.hostPlatform.isx86 && ! stdenv.hostPlatform.isDarwin)
+, x11Support ? (stdenv.hostPlatform.isx86 && ! stdenv.hostPlatform.isDarwin)
 , dllSupport ? true
 , withModules ? [
+    "asdf"
     "pcre"
     "rawsock"
   ]
@@ -41,6 +42,8 @@ assert x11Support -> (libX11 != null && libXau != null && libXt != null
 
 let
   ffcallAvailable = stdenv.isLinux && (libffcall != null);
+  # Some modules need autoreconf called in their directory.
+  shouldReconfModule = name: name != "asdf";
 in
 
 stdenv.mkDerivation {
@@ -82,14 +85,17 @@ stdenv.mkDerivation {
   '';
 
   preConfigure = lib.optionalString stdenv.isDarwin (''
-    cd src
-    autoreconf -f -i -I m4 -I glm4
-    cd -
+    (
+      cd src
+      autoreconf -f -i -I m4 -I glm4
+    )
   '' + lib.concatMapStrings (x: ''
-    cd modules/${x}
-    autoreconf -f -i -I ../../src -I ../../src/m4 -I ../../src/glm4
-    cd -
-  '') withModules);
+    (
+      root="$PWD"
+      cd modules/${x}
+      autoreconf -f -i -I "$root/src" -I "$root/src/m4" -I "$root/src/glm4"
+    )
+  '') (builtins.filter shouldReconfModule withModules));
 
   configureFlags = [ "builddir" ]
   ++ lib.optional (!dllSupport) "--without-dynamic-modules"
@@ -106,6 +112,8 @@ stdenv.mkDerivation {
     sed -i -re '/ cfree /d' -i modules/bindings/glibc/linux.lisp
     cd builddir
   '';
+
+  doCheck = true;
 
   postInstall =
     lib.optionalString (withModules != [])

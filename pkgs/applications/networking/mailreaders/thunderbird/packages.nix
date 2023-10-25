@@ -29,6 +29,7 @@ rec {
       broken = stdenv.buildPlatform.is32bit; # since Firefox 60, build on 32-bit platforms fails with "out of memory".
                                              # not in `badPlatforms` because cross-compilation on 64-bit machine might work.
       license = licenses.mpl20;
+      knownVulnerabilities = [ "Thunderbird 102 support has ended" ];
     };
     updateScript = callPackage ./update.nix {
       attrPath = "thunderbird-unwrapped";
@@ -43,13 +44,13 @@ rec {
 
   thunderbird-115 = (buildMozillaMach rec {
     pname = "thunderbird";
-    version = "115.2.3";
+    version = "115.3.3";
     application = "comm/mail";
     applicationName = "Mozilla Thunderbird";
     binaryName = pname;
     src = fetchurl {
       url = "mirror://mozilla/thunderbird/releases/${version}/source/thunderbird-${version}.source.tar.xz";
-      sha512 = "983547b2be67ffbe7727efa50bd925f576ec19bcfcf940d5d36def19aebea27494b3af0a37756a441b544ebbca0cf546fcaf8737e76a859b4d860c8294bba1dc";
+      sha512 = "631042a3cdbcbae91d93eb71c0d4f6a1122e8bc7000d75fcc7d3cbdd0e82a4b31abac590c75771e77ab08d5700582b6dedacf62ce8e21a91e9ea81aedf1bbeaa";
     };
     extraPatches = [
       # The file to be patched is different from firefox's `no-buildconfig-ffx90.patch`.
