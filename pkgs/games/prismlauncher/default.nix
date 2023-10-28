@@ -2,6 +2,7 @@
 , stdenv
 , fetchFromGitHub
 , fetchpatch
+, canonicalize-jars-hook
 , cmake
 , cmark
 , Cocoa
@@ -41,7 +42,9 @@ rec {
     sha256 = "sha256-RArg60S91YKp1Mt97a5JNfBEOf2cmuX4pK3VAx2WfqM=";
   };
 
-  patches = lib.optionals stdenv.isDarwin [
+  patches = [
+    ./0001-launcher-translations-explicitly-convert-QVector-ite.patch
+  ] ++ lib.optionals stdenv.isDarwin [
     # https://github.com/PrismLauncher/PrismLauncher/pull/1452
     # These patches allow us to disable the Sparkle updater and cmake bundling
     # TODO: remove these when updating to 8.0
@@ -67,7 +70,7 @@ rec {
     })
   ];
 
-  nativeBuildInputs = [ extra-cmake-modules cmake jdk17 ninja ];
+  nativeBuildInputs = [ extra-cmake-modules cmake jdk17 ninja canonicalize-jars-hook ];
   buildInputs =
     [
       qtbase
@@ -97,6 +100,7 @@ rec {
   dontWrapQtApps = true;
 
   meta = with lib; {
+    mainProgram = "prismlauncher";
     homepage = "https://prismlauncher.org/";
     description = "A free, open source launcher for Minecraft";
     longDescription = ''

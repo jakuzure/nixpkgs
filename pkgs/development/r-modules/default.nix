@@ -423,7 +423,7 @@ let
     seqinr = [ pkgs.zlib.dev ];
     webp = [ pkgs.pkg-config ];
     seqminer = with pkgs; [ zlib.dev bzip2 ];
-    sf = with pkgs; [ gdal proj geos ];
+    sf = with pkgs; [ gdal proj geos libtiff curl ];
     terra = with pkgs; [ gdal proj geos ];
     showtext = with pkgs; [ zlib libpng icu freetype.dev ];
     simplexreg = [ pkgs.gsl ];
@@ -603,7 +603,6 @@ let
     ncdfFlow = [ pkgs.zlib.dev ];
     proj4 = [ pkgs.proj.dev ];
     rtmpt = [ pkgs.gsl ];
-    rmarkdown = [ pkgs.pandoc ];
     mixcat = [ pkgs.gsl ];
     libstableR = [ pkgs.gsl ];
     landsepi = [ pkgs.gsl ];
@@ -1033,6 +1032,7 @@ let
     });
 
     quarto = old.quarto.overrideAttrs (attrs: {
+      propagatedBuildInputs = attrs.propagatedBuildInputs ++ [ pkgs.quarto ];
       postPatch = ''
         substituteInPlace "R/quarto.R" \
           --replace "path_env <- Sys.getenv(\"QUARTO_PATH\", unset = NA)" "path_env <- Sys.getenv(\"QUARTO_PATH\", unset = '${lib.getBin pkgs.quarto}/bin/quarto')"
@@ -1360,6 +1360,13 @@ let
 
     rhdf5= old.rhdf5.overrideAttrs (attrs: {
       patches = [ ./patches/rhdf5.patch ];
+    });
+
+    rmarkdown = old.rmarkdown.overrideAttrs (_: {
+      preConfigure = ''
+        substituteInPlace R/pandoc.R \
+          --replace '"~/opt/pandoc"' '"~/opt/pandoc", "${pkgs.pandoc}/bin"'
+      '';
     });
 
     redland = old.redland.overrideAttrs (_: {

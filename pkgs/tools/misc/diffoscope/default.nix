@@ -78,11 +78,11 @@
 # Note: when upgrading this package, please run the list-missing-tools.sh script as described below!
 python3.pkgs.buildPythonApplication rec {
   pname = "diffoscope";
-  version = "246";
+  version = "250";
 
   src = fetchurl {
     url = "https://diffoscope.org/archive/diffoscope-${version}.tar.bz2";
-    hash = "sha256-z7wrc8hveKqMJsJMLQXO3z+wcJxpY8QFoYxTBUzfGPg=";
+    hash = "sha256-M73txRNzYARVdtUXHy4k92akgxfA6Now83KdqS/rHCI=";
   };
 
   outputs = [
@@ -244,8 +244,13 @@ python3.pkgs.buildPythonApplication rec {
     "test_symlink_root"
   ];
 
+  disabledTestPaths = [
+    # fails due to https://github.com/NixOS/nixpkgs/issues/256896
+    # should be removed once that issue is resolved in coreboot or diffoscope
+    "tests/comparators/test_cbfs.py"
+  ]
   # Flaky tests on Darwin
-  disabledTestPaths = lib.optionals stdenv.isDarwin [
+  ++ lib.optionals stdenv.isDarwin [
     "tests/comparators/test_git.py"
     "tests/comparators/test_java.py"
     "tests/comparators/test_uimage.py"

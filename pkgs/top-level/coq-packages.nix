@@ -120,6 +120,7 @@ let
       tlc = callPackage ../development/coq-modules/tlc {};
       topology = callPackage ../development/coq-modules/topology {};
       trakt = callPackage ../development/coq-modules/trakt {};
+      vcfloat = callPackage ../development/coq-modules/vcfloat {};
       Velisarios = callPackage ../development/coq-modules/Velisarios {};
       Verdi = callPackage ../development/coq-modules/Verdi {};
       VST = callPackage ../development/coq-modules/VST ((lib.optionalAttrs
@@ -181,6 +182,7 @@ in rec {
   coq_8_15 = mkCoq "8.15";
   coq_8_16 = mkCoq "8.16";
   coq_8_17 = mkCoq "8.17";
+  coq_8_18 = mkCoq "8.18";
 
   coqPackages_8_5 = mkCoqPackages coq_8_5;
   coqPackages_8_6 = mkCoqPackages coq_8_6;
@@ -195,7 +197,8 @@ in rec {
   coqPackages_8_15 = mkCoqPackages coq_8_15;
   coqPackages_8_16 = mkCoqPackages coq_8_16;
   coqPackages_8_17 = mkCoqPackages coq_8_17;
-  coqPackages = recurseIntoAttrs coqPackages_8_17;
+  coqPackages_8_18 = mkCoqPackages coq_8_18;
+  coqPackages = recurseIntoAttrs coqPackages_8_18;
   coq = coqPackages.coq;
 
 }

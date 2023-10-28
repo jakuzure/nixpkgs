@@ -5,19 +5,28 @@
 , installShellFiles
 , jq
 , python3
+, fetchpatch
 }:
 
 python3.pkgs.buildPythonApplication rec {
   pname = "todoman";
-  version = "4.3.1";
+  version = "4.3.2";
   format = "pyproject";
 
   src = fetchFromGitHub {
     owner = "pimutils";
     repo = pname;
     rev = "refs/tags/v${version}";
-    hash = "sha256-pa1zzu0ITJObzhSmohjgiGTCoautXrY+SQQ3hxEtQcE=";
+    hash = "sha256-dxyI9ypZZBouTUF72wzvi7j+CeoQ9JNSiXrVeV7ForY=";
   };
+
+  patches = [
+    (fetchpatch {
+      name = "disable-broken-urwid-test.patch";
+      url = "https://github.com/pimutils/todoman/commit/7ff0d2e2e69e24df5d66fecc58f8cd0b4e5ced6d.patch";
+      hash = "sha256-MMNnnIthNqobexd8GaA6lYxzv5gr1l0e9YK+Ygeje2w=";
+    })
+  ];
 
   SETUPTOOLS_SCM_PRETEND_VERSION = version;
 
@@ -92,7 +101,7 @@ python3.pkgs.buildPythonApplication rec {
     '';
     changelog = "https://github.com/pimutils/todoman/raw/v${version}/CHANGELOG.rst";
     license = licenses.isc;
-    maintainers = with maintainers; [ leenaars ];
+    maintainers = with maintainers; [ leenaars antonmosich ];
     mainProgram = "todo";
   };
 }

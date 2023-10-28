@@ -212,9 +212,16 @@ in
       programs.bash.vteIntegration = mkDefault true;
       programs.zsh.vteIntegration = mkDefault true;
 
+      # Qt application style
+      qt = {
+        enable = mkDefault true;
+        style = mkDefault "gtk2";
+        platformTheme = mkDefault "gtk2";
+      };
+
       # Default Fonts
       fonts.packages = with pkgs; [
-        source-code-pro # Default monospace font in 3.32
+        dejavu_fonts # Default monospace font in LMDE 6+
         ubuntu_font_family # required for default theme
       ];
     })

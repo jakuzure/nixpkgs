@@ -19,26 +19,26 @@
 , tornado
 , urllib3
 , versioneer
-, wheel
 , zict
 }:
 
 buildPythonPackage rec {
   pname = "distributed";
-  version = "2023.8.0";
-  format = "pyproject";
+  version = "2023.10.0";
+  pyproject = true;
 
-  disabled = pythonOlder "3.8";
+  disabled = pythonOlder "3.9";
 
   src = fetchFromGitHub {
     owner = "dask";
-    repo = pname;
+    repo = "distributed";
     rev = "refs/tags/${version}";
-    hash = "sha256-FvNh7gfxUR1iIUY3kMolhzcbWupQL39E9JXWip8bdrQ=";
+    hash = "sha256-V0L1qY9xtJgKxNEZ69z8CQuXsUs30cqu6xFrsjKWkbY=";
   };
 
   postPatch = ''
     substituteInPlace pyproject.toml \
+      --replace "versioneer[toml]==" "versioneer[toml]>=" \
       --replace 'dynamic = ["version"]' 'version = "${version}"'
   '';
 
@@ -46,7 +46,7 @@ buildPythonPackage rec {
     setuptools
     setuptools-scm
     versioneer
-  ];
+  ] ++ versioneer.optional-dependencies.toml;
 
   propagatedBuildInputs = [
     click

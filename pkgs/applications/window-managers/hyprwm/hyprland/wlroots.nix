@@ -42,8 +42,8 @@ wlroots.overrideAttrs
       domain = "gitlab.freedesktop.org";
       owner = "wlroots";
       repo = "wlroots";
-      rev = "e8d545a9770a2473db32e0a0bfa757b05d2af4f3";
-      hash = "sha256-gv5kjss6REeQG0BmvK2gTx7jHLRdCnP25po6It6I6N8=";
+      rev = "3406c1b17a4a7e6d4e2a7d9c1176affa72bce1bc";
+      hash = "sha256-ecDhdYLXWHsxMv+EWG36mCNDvzRbu9qfjH7dLxL7aGM=";
     };
 
     pname =
@@ -57,12 +57,10 @@ wlroots.overrideAttrs
         "${hyprland.src}/nix/patches/wlroots-nvidia.patch"
       ]);
 
-    postPatch =
-      (old.postPatch or "")
-      + (
-        lib.optionalString enableNvidiaPatches
-          ''substituteInPlace render/gles2/renderer.c --replace "glFlush();" "glFinish();"''
-      );
+    # don't need old.postPatch for hwdata's path in wlroots 0.16
+    postPatch = lib.optionalString enableNvidiaPatches ''
+      substituteInPlace render/gles2/renderer.c --replace "glFlush();" "glFinish();"
+    '';
 
     buildInputs = old.buildInputs ++ [
       hwdata

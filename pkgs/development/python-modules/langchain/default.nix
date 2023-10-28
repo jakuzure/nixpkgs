@@ -6,8 +6,10 @@
 , pythonRelaxDepsHook
 , poetry-core
 , aiohttp
+, anyio
 , async-timeout
 , dataclasses-json
+, jsonpatch
 , langsmith
 , numexpr
 , numpy
@@ -43,6 +45,7 @@
 , librosa
 , lxml
 , manifest-ml
+, markdownify
 , neo4j
 , networkx
 , nlpcloud
@@ -85,7 +88,7 @@
 
 buildPythonPackage rec {
   pname = "langchain";
-  version = "0.0.268";
+  version = "0.0.320";
   format = "pyproject";
 
   disabled = pythonOlder "3.8";
@@ -94,17 +97,10 @@ buildPythonPackage rec {
     owner = "hwchase17";
     repo = "langchain";
     rev = "refs/tags/v${version}";
-    hash = "sha256-x5cYtOY91JpW3vV7Q6JNNRoTFKGMu93TqBAhnhQ6pHE=";
+    hash = "sha256-Yw3gGt/OvrQ4IYauFUt6pBWOecy+PaWiGXoo5dWev5M=";
   };
 
   sourceRoot = "${src.name}/libs/langchain";
-
-  postPatch = ''
-    substituteInPlace langchain/utilities/bash.py \
-      --replace '"env", ["-i", "bash", ' '"${lib.getExe bash}", ['
-    substituteInPlace tests/unit_tests/test_bash.py \
-      --replace "/bin/sh" "${bash}/bin/sh"
-  '';
 
   nativeBuildInputs = [
     poetry-core
@@ -127,6 +123,8 @@ buildPythonPackage rec {
     aiohttp
     numexpr
     langsmith
+    anyio
+    jsonpatch
   ] ++ lib.optionals (pythonOlder "3.11") [
     async-timeout
   ];
@@ -264,6 +262,7 @@ buildPythonPackage rec {
 
   nativeCheckInputs = [
     freezegun
+    markdownify
     pandas
     pytest-asyncio
     pytest-mock

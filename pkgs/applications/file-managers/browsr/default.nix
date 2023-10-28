@@ -6,14 +6,14 @@
 
 python3.pkgs.buildPythonApplication rec {
   pname = "browsr";
-  version = "1.13.0";
+  version = "1.17.1";
   format = "pyproject";
 
   src = fetchFromGitHub {
     owner = "juftin";
     repo = "browsr";
     rev = "v${version}";
-    hash = "sha256-vYb4XWBdQ4HJzICXNiBXit4aVgjYA9SCX15MppVtTS8=";
+    hash = "sha256-FExDKugFP94C3zMnR1V4QDPWeM2OtRH2ei0LNs3h06c=";
   };
 
   nativeBuildInputs = with python3.pkgs; [
@@ -50,6 +50,7 @@ python3.pkgs.buildPythonApplication rec {
 
   pythonRelaxDeps = [
     "art"
+    "pandas"
     "pymupdf"
     "rich-click"
     "textual"
@@ -70,6 +71,5 @@ python3.pkgs.buildPythonApplication rec {
     changelog = "https://github.com/juftin/browsr/releases/tag/${src.rev}";
     license = licenses.mit;
     maintainers = with maintainers; [ figsoda ];
-    broken = versionAtLeast python3.pkgs.pandas.version "2" || versionAtLeast python3.pkgs.pillow.version "10";
   };
 }

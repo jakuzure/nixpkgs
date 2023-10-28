@@ -1,12 +1,14 @@
-{ lib, fetchPypi, fetchpatch, python, buildPythonPackage, mpi, openssh }:
+{ lib, fetchPypi, fetchpatch, python, buildPythonPackage
+, mpi, mpiCheckPhaseHook, openssh
+}:
 
 buildPythonPackage rec {
   pname = "mpi4py";
-  version = "3.1.4";
+  version = "3.1.5";
 
   src = fetchPypi {
     inherit pname version;
-    hash = "sha256-F4WPLrxiMiDQEg0fqNQo0DPd50nEvDWzPYGmatf5NIA=";
+    hash = "sha256-pwbnbbklUTXC+10e9Uy097DkrZ4zy62n3idiYgXyoVM=";
   };
 
   passthru = {
@@ -33,10 +35,6 @@ buildPythonPackage rec {
     # sometimes packages specify where files should be installed outside the usual
     # python lib prefix, we override that back so all infrastructure (setup hooks)
     # work as expected
-
-    # Needed to run the tests reliably. See:
-    # https://bitbucket.org/mpi4py/mpi4py/issues/87/multiple-test-errors-with-openmpi-30
-    export OMPI_MCA_rmaps_base_oversubscribe=yes
   '';
 
   setupPyBuildFlags = ["--mpicc=${mpi}/bin/mpicc"];
@@ -45,7 +43,7 @@ buildPythonPackage rec {
 
   __darwinAllowLocalNetworking = true;
 
-  nativeCheckInputs = [ openssh ];
+  nativeCheckInputs = [ openssh mpiCheckPhaseHook ];
 
   meta = with lib; {
     description = "Python bindings for the Message Passing Interface standard";

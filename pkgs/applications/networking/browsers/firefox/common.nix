@@ -1,5 +1,6 @@
 { pname
 , version
+, packageVersion ? version
 , meta
 , updateScript ? null
 , binaryName ? "firefox"
@@ -206,7 +207,7 @@ in
 
 buildStdenv.mkDerivation {
   pname = "${pname}-unwrapped";
-  inherit version;
+  version = packageVersion;
 
   inherit src unpackPhase meta;
 
@@ -469,7 +470,7 @@ buildStdenv.mkDerivation {
   # icu73 changed how it follows symlinks which breaks in the firefox sandbox
   # https://bugzilla.mozilla.org/show_bug.cgi?id=1839287
   ++ [ (if (lib.versionAtLeast version "115") then icu else icu72) ]
-  ++ [ (if (lib.versionAtLeast version "103") then nss_latest else nss_esr) ]
+  ++ [ (if (lib.versionAtLeast version "116") then nss_latest else nss_esr/*3.90*/) ]
   ++ lib.optional  alsaSupport alsa-lib
   ++ lib.optional  jackSupport libjack2
   ++ lib.optional  pulseaudioSupport libpulseaudio # only headers are needed
@@ -557,7 +558,6 @@ buildStdenv.mkDerivation {
   passthru = {
     inherit application extraPatches;
     inherit updateScript;
-    inherit version;
     inherit alsaSupport;
     inherit binaryName;
     inherit jackSupport;
@@ -569,6 +569,7 @@ buildStdenv.mkDerivation {
     inherit tests;
     inherit gtk3;
     inherit wasiSysRoot;
+    version = packageVersion;
   } // extraPassthru;
 
   hardeningDisable = [ "format" ]; # -Werror=format-security

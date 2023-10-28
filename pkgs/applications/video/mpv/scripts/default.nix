@@ -9,10 +9,12 @@ lib.recurseIntoAttrs
     autocrop = callPackage ./autocrop.nix { };
     autodeint = callPackage ./autodeint.nix { };
     autoload = callPackage ./autoload.nix { };
+    chapterskip = callPackage ./chapterskip.nix { };
     convert = callPackage ./convert.nix { };
     inhibit-gnome = callPackage ./inhibit-gnome.nix { };
     mpris = callPackage ./mpris.nix { };
     mpv-playlistmanager = callPackage ./mpv-playlistmanager.nix { };
+    mpv-webm = callPackage ./mpv-webm.nix { };
     mpvacious = callPackage ./mpvacious.nix { };
     quality-menu = callPackage ./quality-menu.nix { };
     simple-mpv-webui = callPackage ./simple-mpv-webui.nix { };

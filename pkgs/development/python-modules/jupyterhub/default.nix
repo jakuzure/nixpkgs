@@ -5,6 +5,7 @@
 , beautifulsoup4
 , buildPythonPackage
 , certipy
+, configurable-http-proxy
 , cryptography
 , entrypoints
 , fetchPypi
@@ -14,6 +15,8 @@
 , jsonschema
 , jupyter-telemetry
 , jupyterlab
+, jupyter-core
+, jupyter-server
 , mock
 , nbclassic
 , nodePackages
@@ -96,11 +99,11 @@ buildPythonPackage rec {
 
     substituteInPlace jupyterhub/proxy.py --replace \
       "'configurable-http-proxy'" \
-      "'${nodePackages.configurable-http-proxy}/bin/configurable-http-proxy'"
+      "'${configurable-http-proxy}/bin/configurable-http-proxy'"
 
     substituteInPlace jupyterhub/tests/test_proxy.py --replace \
       "'configurable-http-proxy'" \
-      "'${nodePackages.configurable-http-proxy}/bin/configurable-http-proxy'"
+      "'${configurable-http-proxy}/bin/configurable-http-proxy'"
 
     substituteInPlace setup.py --replace \
       "'npm'" "'true'"
@@ -137,6 +140,8 @@ buildPythonPackage rec {
     sqlalchemy
     tornado
     traitlets
+    jupyter-core
+    jupyter-server
   ] ++ lib.optionals (pythonOlder "3.10") [
     importlib-metadata
   ];
@@ -200,7 +205,7 @@ buildPythonPackage rec {
     homepage = "https://jupyter.org/";
     changelog = "https://github.com/jupyterhub/jupyterhub/blob/${version}/docs/source/reference/changelog.md";
     license = licenses.bsd3;
-    maintainers = with maintainers; [ ixxie cstrahan ];
+    maintainers = with maintainers; [ ixxie ];
     # darwin: E   OSError: dlopen(/nix/store/43zml0mlr17r5jsagxr00xxx91hz9lky-openpam-20170430/lib/libpam.so, 6): image not found
     broken = (stdenv.isLinux && stdenv.isAarch64) || stdenv.isDarwin;
   };

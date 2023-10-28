@@ -3,6 +3,7 @@
 , fetchpatch
 , fzf
 , lib
+, ocaml
 , openssl
 , zstd
 }:
@@ -264,6 +265,7 @@ with self;
     buildInputs = [ jst-config ];
     propagatedBuildInputs = [ base base_bigstring base_quickcheck ppx_jane time_now ];
     doCheck = false; # circular dependency with core_kernel
+    meta.broken = lib.versionAtLeast ocaml.version "5.1";
   };
 
   core_bench = janePackage {
@@ -548,7 +550,8 @@ with self;
 
   ppx_bench = janePackage {
     pname = "ppx_bench";
-    hash = "0bc0gbm922417wqisafxh35jslcp7xy1s0h0a1q32rhx0ivxx3g6";
+    version = "0.15.1";
+    hash = "sha256-2uk3NfpAODScoQtqiU+ZaOE8zOqkayn/jpfn3GQ4vQg=";
     minimalOCamlVersion = "4.04.2";
     meta.description = "Syntax extension for writing in-line benchmarks in ocaml code";
     propagatedBuildInputs = [ ppx_inline_test ];

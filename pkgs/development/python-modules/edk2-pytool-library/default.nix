@@ -1,39 +1,58 @@
 { lib
 , buildPythonPackage
+, pythonOlder
 , fetchFromGitHub
 , setuptools
 , setuptools-scm
+, pythonRelaxDepsHook
 , pyasn1
 , pyasn1-modules
 , cryptography
+, joblib
+, gitpython
 , pytestCheckHook
 }:
 
 buildPythonPackage rec {
   pname = "edk2-pytool-library";
-  version = "0.16.2";
-  format = "pyproject";
+  version = "0.19.2";
+  pyproject = true;
+
+  disabled = pythonOlder "3.10";
 
   src = fetchFromGitHub {
     owner = "tianocore";
     repo = "edk2-pytool-library";
     rev = "v${version}";
-    hash = "sha256-JL9znvXl+RIEzycKhXkggEJ87bQ+UzspBD1YM3AoYlc=";
+    hash = "sha256-EoBv7mxdT6G1n9as0V8Ad5QckMkqgC2GvcjRDc1+RzA=";
   };
 
   nativeBuildInputs = [
     setuptools
     setuptools-scm
+    pythonRelaxDepsHook
+  ];
+
+  pythonRelaxDeps = [
+    "tinydb"
+    "joblib"
   ];
 
   propagatedBuildInputs = [
     pyasn1
     pyasn1-modules
     cryptography
+    joblib
+    gitpython
   ];
 
   nativeCheckInputs = [
     pytestCheckHook
+  ];
+
+  disabledTests = [
+    # requires network access
+    "test_basic_parse"
   ];
 
   env.SETUPTOOLS_SCM_PRETEND_VERSION = version;
