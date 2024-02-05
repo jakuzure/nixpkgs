@@ -2,6 +2,7 @@
 , buildGoModule
 , fetchFromGitHub
 , nix-update-script
+, installShellFiles
 }:
 
 buildGoModule rec {
@@ -22,6 +23,16 @@ buildGoModule rec {
   ldflags = [ "-s" "-w" "-X github.com/glasskube/glasskube/internal/config.Version=${version}" "-X github.com/glasskube/glasskube/internal/config.Commit=${src.rev}" ];
 
   subPackages = [ "cmd/${pname}" "cmd/package-operator" ];
+
+  nativeBuildInputs = [ installShellFiles ];
+
+  postInstall = ''
+    # Completions
+    installShellCompletion --cmd glasskube \
+      --bash <($out/bin/glasskube completion bash) \
+      --fish <($out/bin/glasskube completion fish) \
+      --zsh <($out/bin/glasskube completion zsh)
+  '';
 
   passthru.updateScript = nix-update-script { };
 
