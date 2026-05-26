@@ -11,6 +11,7 @@
   gnupg,
   gpgme,
   merge3,
+  nix-update-script,
   openssh,
   paramiko,
   pytestCheckHook,
@@ -24,19 +25,19 @@
 
 buildPythonPackage (finalAttrs: {
   pname = "dulwich";
-  version = "1.1.0";
+  version = "1.2.0";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "jelmer";
     repo = "dulwich";
     tag = "dulwich-${finalAttrs.version}";
-    hash = "sha256-9y7+00M2Ib5j+1fHNsJBomkyNZWhihqcIvAgGpJ5AB8=";
+    hash = "sha256-R5vq3mb1nSqEn+LIUaXc8Edrw8TgTb5H4LOXnHgeAzQ=";
   };
 
   cargoDeps = rustPlatform.fetchCargoVendor {
     inherit (finalAttrs) pname version src;
-    hash = "sha256-NEYauayn7laPLQUomQAFEskFP5m8546jYltazR/gn1A=";
+    hash = "sha256-r2Ef8ciZW6rNBg8eLr5lkqtTEXugy7B9DjbSCErJkzc=";
   };
 
   nativeBuildInputs = [
@@ -88,8 +89,6 @@ buildPythonPackage (finalAttrs: {
   '';
 
   disabledTestPaths = [
-    # "Code [in contrib] is not an official part of Dulwich, and may no longer work"
-    "tests/contrib"
     # AssertionError: GPGMEError not raised
     "tests/test_signature.py::GPGSignatureVendorTests::test_verify_invalid_signature"
   ];
@@ -97,6 +96,13 @@ buildPythonPackage (finalAttrs: {
   __darwinAllowLocalNetworking = true;
 
   pythonImportsCheck = [ "dulwich" ];
+
+  passthru.updateScript = nix-update-script {
+    extraArgs = [
+      "--version-regex"
+      "^dulwich-([1-9][0-9.]+)$"
+    ];
+  };
 
   meta = {
     description = "Implementation of the Git file formats and protocols";

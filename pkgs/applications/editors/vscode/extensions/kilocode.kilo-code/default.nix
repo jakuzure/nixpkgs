@@ -12,26 +12,26 @@ vscode-utils.buildVscodeMarketplaceExtension {
       sources = {
         "x86_64-linux" = {
           arch = "linux-x64";
-          hash = "sha256-tG2PUESSzOs5jEPD7Wgtee832pOTOLkxxV/FP7Md6k8=";
+          hash = "sha256-YeF6LyQzVAXgZ5Iqr6YvNcACfiUukUsq7cybeCQdSYc=";
         };
         "x86_64-darwin" = {
           arch = "darwin-x64";
-          hash = "sha256-CqgMcb03eA+orz0rmKoSi5qtQXAN/MzrmogGQGV2yzw=";
+          hash = "sha256-SjirNvI83eh3Gt5rGsaiLT6TJMH6LRQAasOFNy9OMCY=";
         };
         "aarch64-linux" = {
           arch = "linux-arm64";
-          hash = "sha256-kDv8t9COz8sWRH9FlrhrDC9UqGBXD7F0IMaWCbZYwBk=";
+          hash = "sha256-FjE3xTp5Mj1584bepVc4nZr3rxCR3CV+jplmA45VF44=";
         };
         "aarch64-darwin" = {
           arch = "darwin-arm64";
-          hash = "sha256-S27qkOYs3arqa68raX+0itOywnlQZAIjxD93GCEjKhs=";
+          hash = "sha256-SAf3+0QSFUDq09AZQnw78ps55RM/RwoAeQuVly7vn10=";
         };
       };
     in
     {
       publisher = "kilocode";
       name = "Kilo-Code";
-      version = "7.0.51";
+      version = "7.2.20";
     }
     // sources.${stdenv.hostPlatform.system}
       or (throw "Unsupported system ${stdenv.hostPlatform.system}");

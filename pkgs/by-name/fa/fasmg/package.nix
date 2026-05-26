@@ -14,11 +14,11 @@
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "fasmg";
-  version = "l45p";
+  version = "l5p0";
 
   src = fetchzip {
     url = "https://flatassembler.net/fasmg.${finalAttrs.version}.zip";
-    sha256 = "sha256-0/P20DiRZbqZHoxWiBPs6wXqpbvRroisyF0dCdmd+j8=";
+    sha256 = "sha256-8nX45tHvKq6FPVhWQGNgrpkZgWuNbfsxL9YJxKa7P3I=";
     stripRoot = false;
   };
 

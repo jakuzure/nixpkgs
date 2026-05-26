@@ -3,6 +3,7 @@
   buildPythonPackage,
   fetchFromGitHub,
   lxmf,
+  msgpack,
   qrcode,
   rns,
   setuptools,
@@ -11,14 +12,14 @@
 
 buildPythonPackage (finalAttrs: {
   pname = "nomadnet";
-  version = "0.9.8";
+  version = "1.0.1";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "markqvist";
     repo = "NomadNet";
     tag = finalAttrs.version;
-    hash = "sha256-az/AzYGt42PBP8w1Lzo2+/cgmXue/rHY/ohysc34SPI=";
+    hash = "sha256-uNchcz9kiLX2nUNRC2rTMv7my+19ylZrHTGWbonziFc=";
   };
 
   build-system = [ setuptools ];
@@ -26,6 +27,7 @@ buildPythonPackage (finalAttrs: {
   dependencies = [
     rns
     lxmf
+    msgpack
     urwid
     qrcode
   ];

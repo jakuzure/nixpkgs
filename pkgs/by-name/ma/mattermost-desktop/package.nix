@@ -15,16 +15,16 @@ in
 
 buildNpmPackage rec {
   pname = "mattermost-desktop";
-  version = "6.1.0";
+  version = "6.1.2";
 
   src = fetchFromGitHub {
     owner = "mattermost";
     repo = "desktop";
     tag = "v${version}";
-    hash = "sha256-5sVYDnz5RPkHfCpA3I1+Lm7z7YLa3fOFYOTEI6Sbxz8=";
+    hash = "sha256-EI1bDSiWdLCXlhUk1CmbUyYU7giey366cZLuhs0qtqY=";
   };
 
-  npmDepsHash = "sha256-YdpF/wuH2H+ouBDzCUcTQWLB8s8wa9L12UiGj4MnurQ=";
+  npmDepsHash = "sha256-7XUZ2rt2fZiQNpW8iHnNDbCSuK4/srWqIEKOKM6xty8=";
   npmBuildScript = "build-prod";
   makeCacheWritable = true;
 
@@ -37,6 +37,8 @@ buildNpmPackage rec {
       --replace-fail \
         "const VERSION = childProcess.execSync('git rev-parse --short HEAD', {cwd: __dirname}).toString();" \
         "const VERSION = process.env.version;"
+    substituteInPlace src/common/config/buildConfig.ts \
+      --replace-fail 'enableUpdateNotifications: true,' 'enableUpdateNotifications: false,'
   '';
 
   postBuild = ''
@@ -101,6 +103,7 @@ buildNpmPackage rec {
     maintainers = with lib.maintainers; [
       joko
       liff
+      yayayayaka
     ];
   };
 }

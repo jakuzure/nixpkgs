@@ -9,6 +9,9 @@
   libdrm,
   libGLU,
   libGL,
+  freetype,
+  fontconfig,
+  zlib,
   pango,
   pkg-config,
   docbook_xsl,
@@ -26,16 +29,17 @@
 }:
 stdenv.mkDerivation (finalAttrs: {
   pname = "kmscon";
-  version = "9.3.2";
+  version = "9.3.5";
 
   src = fetchFromGitHub {
     owner = "kmscon";
     repo = "kmscon";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-a1H9/j92Z/vjvFp226Ps9PFy5dAS8yg+RErgJWIb9HQ=";
+    hash = "sha256-QBN1rSDmwVg7cgljhe6kVIg/xLoolmOPqS8JXZuQiXs=";
   };
 
   strictDeps = true;
+  __structuredAttrs = true;
 
   depsBuildBuild = [
     buildPackages.stdenv.cc
@@ -47,6 +51,9 @@ stdenv.mkDerivation (finalAttrs: {
     libdrm
     libtsm
     libxkbcommon
+    freetype
+    fontconfig
+    zlib
     pango
     systemdLibs
     libgbm

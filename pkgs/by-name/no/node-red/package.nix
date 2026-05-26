@@ -9,16 +9,16 @@
 
 buildNpmPackage rec {
   pname = "node-red";
-  version = "4.1.7";
+  version = "4.1.8";
 
   src = fetchFromGitHub {
     owner = "node-red";
     repo = "node-red";
     tag = version;
-    hash = "sha256-J7LwIXicEMlWtnO1dXjipVOOQQKUB2bc8uJu0Yd/J7s=";
+    hash = "sha256-IjV3hS1v+KgtXbXO2/Nr4GpABK+l2HXfqsPukGD7ViQ=";
   };
 
-  npmDepsHash = "sha256-OiaUGSpSiQoQlwh28FZcKD1lPjt6VrTLu0KuOfAg2IE=";
+  npmDepsHash = "sha256-eFRA3oJeuxHWrZepWyGztvNdJ3QKG+J6pAxQhdVqxxw=";
 
   nativeBuildInputs = [ jq ];
 
@@ -27,7 +27,7 @@ buildNpmPackage rec {
       packageDir = "packages/node_modules/node-red";
     in
     ''
-      ${lib.getExe jq} '. += {"bin": {"node-red": "${packageDir}/red.js", "node-red-pi": "${packageDir}/bin/node-red-pi"}}' package.json > package.json.tmp
+      jq '. += {"bin": {"node-red": "${packageDir}/red.js", "node-red-pi": "${packageDir}/bin/node-red-pi"}}' package.json > package.json.tmp
       mv package.json.tmp package.json
     '';
 

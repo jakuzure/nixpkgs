@@ -149,7 +149,7 @@ let
     npmRegistryOverrides = mkOption {
       type = types.attrsOf types.str;
       description = ''
-        The default NPM registry overrides for all `fetchNpmDeps` calls, as an attribute set.
+        The default npm registry overrides for all `fetchNpmDeps` calls, as an attribute set.
 
         For each attribute, all files fetched from the host corresponding to the name will instead be fetched from the host (and sub-path) specified in the value.
 
@@ -172,7 +172,7 @@ let
         lib.isAttrs j && lib.all builtins.isString (builtins.attrValues j)
       );
       description = ''
-        A string containing a string with a JSON representation of NPM registry overrides for `fetchNpmDeps`.
+        A string containing a string with a JSON representation of npm registry overrides for `fetchNpmDeps`.
 
         This overrides the [`npmRegistryOverrides`](#opt-npmRegistryOverrides) option, see its documentation for more details.
       '';
@@ -390,6 +390,21 @@ let
       default = false;
       description = ''
         Whether to check that the `meta` attribute of derivations are correct during evaluation time.
+      '';
+    };
+
+    recursionMode = mkOption {
+      type = types.uniq (
+        types.enum [
+          "hydra"
+          "eval"
+          "search"
+        ]
+      );
+      default = "eval";
+      description = ''
+        In which way to recurse through Nixpkgs. In most cases you want keep this as the default.
+        You can use this to emulate how `hydra` and `search` are going through Nixpkgs.
       '';
     };
 

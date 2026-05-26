@@ -15,16 +15,20 @@
   makeDesktopItem,
   makeWrapper,
   nodejs,
+  nodejs-slim,
   removeReferencesTo,
   yarnBuildHook,
   yarnConfigHook,
   xcbuild,
   zip,
 
-  electron,
+  electron_39,
   git,
 }:
 
+let
+  electron = electron_39;
+in
 stdenv.mkDerivation (finalAttrs: {
   pname = "logseq";
   version = "0.10.15";
@@ -148,7 +152,7 @@ stdenv.mkDerivation (finalAttrs: {
       fakeGit
       makeWrapper
       nodejs
-      (nodejs.python.withPackages (ps: [ ps.setuptools ]))
+      (nodejs-slim.python.withPackages (ps: [ ps.setuptools ]))
       removeReferencesTo
       yarnBuildHook
       yarnConfigHook

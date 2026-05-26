@@ -5,22 +5,24 @@
   installShellFiles,
   pkg-config,
   openssl,
+  writableTmpDirAsHomeHook,
+  podman,
   versionCheckHook,
   nix-update-script,
 }:
 
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "snouty";
-  version = "0.3.3";
+  version = "0.4.2";
 
   src = fetchFromGitHub {
     owner = "antithesishq";
     repo = "snouty";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-ScE+Er8k86N6zmEnVEpxWPnW6g6Gyy1TA+2HNGZmqgE=";
+    hash = "sha256-LDcGeRiDYUKDrQZ8pXrRhPFLS0tE16wtgJ8AN3gIVd0=";
   };
 
-  cargoHash = "sha256-I/pXyX4Z+tGqVbFjog+GzXJYnBwpyYZsc0lvlBOdT/Q=";
+  cargoHash = "sha256-IYprp5XEc2DSGWmf9IOKAHfnMX8JbmUWgvKK+CoA1i8=";
 
   nativeBuildInputs = [
     installShellFiles
@@ -38,6 +40,13 @@ rustPlatform.buildRustPackage (finalAttrs: {
       $releaseDir/build/snouty-*/out/snouty.{bash,fish} \
       --zsh $releaseDir/build/snouty-*/out/_snouty
   '';
+
+  useNextest = true;
+
+  nativeCheckInputs = [
+    writableTmpDirAsHomeHook
+    podman
+  ];
 
   nativeInstallCheckInputs = [ versionCheckHook ];
   versionCheckProgramArg = "version";

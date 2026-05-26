@@ -2,29 +2,20 @@
   lib,
   buildNpmPackage,
   fetchFromGitHub,
-  jq,
 }:
 
 buildNpmPackage (finalAttrs: {
   pname = "homebridge";
-  version = "1.11.3";
+  version = "2.0.2";
 
   src = fetchFromGitHub {
     owner = "homebridge";
     repo = "homebridge";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-Hr4pwWsISj4zde5DNOVSciZr1xJmL7M0wG2GU62ZDk4=";
+    hash = "sha256-bs7h9qHAWPNEqomTbit2LBtM5yLHQnFLjCMJ/ybHxHU=";
   };
 
-  npmDepsHash = "sha256-LPCaqJGMeX8PaGwxfLnxQ5hdNycaE9nUMIU3LM6PHkg=";
-
-  # Homebridge's clean phase attempts to install rimraf directly, which fails in nix builds
-  # rimraf is already in the declared dependencies, so we just don't need to do it.
-  # This will replace "npm install rimraf && rimraf lib/" with "rimraf lib/".
-  preBuild = ''
-    cat package.json | ${jq}/bin/jq '.scripts.clean = "rimraf lib/"' > package.json.tmp
-    mv package.json.tmp package.json
-  '';
+  npmDepsHash = "sha256-/1mIwWFa6L7bLao0/Q3I+nniVt5crVa8ufuvkYeoJUY=";
 
   meta = {
     description = "Lightweight emulator of iOS HomeKit API";

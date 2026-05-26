@@ -18,14 +18,14 @@
 
 buildPythonPackage rec {
   pname = "pontos";
-  version = "26.2.0";
+  version = "26.4.3";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "greenbone";
     repo = "pontos";
     tag = "v${version}";
-    hash = "sha256-tmu4BGjQlYehOg6lucKaeDnWK8v2VMviFwnmKd6IKWE=";
+    hash = "sha256-8IAAYT3ds+QB0+o9WWOGqKkHJHb7bbBAm5cHfSVXGVo=";
   };
 
   build-system = [ poetry-core ];

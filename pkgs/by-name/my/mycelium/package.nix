@@ -10,7 +10,7 @@
 
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "mycelium";
-  version = "0.7.3";
+  version = "0.7.7";
 
   sourceRoot = "${finalAttrs.src.name}/myceliumd";
 
@@ -18,10 +18,10 @@ rustPlatform.buildRustPackage (finalAttrs: {
     owner = "threefoldtech";
     repo = "mycelium";
     rev = "v${finalAttrs.version}";
-    hash = "sha256-WB08dcQiz9byHNKu3ObyiQ99h18osOMeKe5hdvVaeqw=";
+    hash = "sha256-amw0DkPT7As7L9Zhts+s4g3N67uu/BDZmbJXapr89XQ=";
   };
 
-  cargoHash = "sha256-Wo+J0aVGiS4d1oipvrvV0abdWtHQj8iJozFM7Fj/jNs=";
+  cargoHash = "sha256-Shi7AbyuvWwWOm9RuUYYLS/wEqZ7/YiOo+8m2XDFAnM=";
 
   nativeBuildInputs = [ versionCheckHook ];
 

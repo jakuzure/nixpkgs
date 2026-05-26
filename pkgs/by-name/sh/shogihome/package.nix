@@ -22,16 +22,16 @@ let
 in
 buildNpmPackage (finalAttrs: {
   pname = "shogihome";
-  version = "1.27.0";
+  version = "1.27.2";
 
   src = fetchFromGitHub {
     owner = "sunfish-shogi";
     repo = "shogihome";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-T1MgcqCi9rwN86vgCAshokznMXh+masFLcO43sz2bo0=";
+    hash = "sha256-VaHIDhTYcGT4J7ken/Cz0QwSlL42RMcP4lqFR4P7/SM=";
   };
 
-  npmDepsHash = "sha256-5tZQCxql6jZAEU+e/hkQYnaHy1l5dWaH/p2rbGDAX14=";
+  npmDepsHash = "sha256-2NeiCpcX1j7z+PtIF3euQamVTa+6G4SEHPGk8IVC1Dw=";
 
   postPatch = ''
     substituteInPlace package.json \
@@ -158,10 +158,12 @@ buildNpmPackage (finalAttrs: {
   meta = {
     description = "Shogi frontend supporting USI engines";
     homepage = "https://sunfish-shogi.github.io/shogihome/";
-    license = with lib.licenses; [
-      mit
-      asl20 # for icons
-    ];
+    license =
+      with lib.licenses;
+      AND [
+        mit
+        asl20 # for icons
+      ];
     maintainers = with lib.maintainers; [
       kachick
     ];

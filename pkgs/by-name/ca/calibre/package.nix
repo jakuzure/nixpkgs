@@ -40,11 +40,11 @@ let
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "calibre";
-  version = "9.5.0";
+  version = "9.8.0";
 
   src = fetchurl {
     url = "https://download.calibre-ebook.com/${finalAttrs.version}/calibre-${finalAttrs.version}.tar.xz";
-    hash = "sha256-NDz3SxR8GyJi/POdpgEJzRdYNVV88/NkHczrA0JylfM=";
+    hash = "sha256-3dkWokb8gh4JPbrBsJ9dGy/IS1PfNrAU775qxo8CaO8=";
   };
 
   patches =
@@ -185,9 +185,6 @@ stdenv.mkDerivation (finalAttrs: {
 
   installPhase = ''
     runHook preInstall
-
-    # Work around #493843 until #493988 lands on master.
-    export QMAKE="${qt6.qtbase}/bin/qmake"
 
     python setup.py install --root=$out \
       --prefix=$out \

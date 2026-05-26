@@ -26,7 +26,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
     installShellCompletion --cmd hwatch \
       --bash $src/completion/bash/hwatch-completion.bash \
       --fish $src/completion/fish/hwatch.fish \
-      --zsh $src/completion/zsh/_hwatch \
+      --zsh $src/completion/zsh/_hwatch
   '';
 
   passthru.tests.version = testers.testVersion {
@@ -41,7 +41,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
       execution results and can check this differences at after.
     '';
     license = lib.licenses.mit;
-    maintainers = with lib.maintainers; [ hamburger1984 ];
+    maintainers = [ ];
     mainProgram = "hwatch";
   };
 })

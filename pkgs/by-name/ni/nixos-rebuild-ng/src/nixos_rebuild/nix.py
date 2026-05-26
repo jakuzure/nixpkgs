@@ -717,10 +717,20 @@ def switch_to_configuration(
         },
         remote=target_host,
         sudo=sudo,
+        # switch-to-configuration is not expected to produce meaningful
+        # stdout, but if it (or any of its children) does, it would leak
+        # into our stdout and break the "only the store path on stdout"
+        # contract documented in services.py (see print_result). Redirect
+        # its stdout to our stderr defensively.
+        stdout=sys.stderr,
     )
 
 
-def upgrade_channels(all_channels: bool = False, sudo: bool = False) -> None:
+def upgrade_channels(
+    all_channels: bool = False,
+    sudo: bool = False,
+    channels_dir: Path = Path("/nix/var/nix/profiles/per-user/root/channels/"),
+) -> None:
     """Upgrade channels for classic Nix.
 
     It will either upgrade just the `nixos` channel (including any channel
@@ -732,7 +742,8 @@ def upgrade_channels(all_channels: bool = False, sudo: bool = False) -> None:
             "also pass '--sudo' or run the command as root (e.g., with sudo)"
         )
 
-    for channel_path in Path("/nix/var/nix/profiles/per-user/root/channels/").glob("*"):
+    channel_updated = False
+    for channel_path in channels_dir.glob("*"):
         if channel_path.is_dir() and (
             all_channels
             or channel_path.name == "nixos"
@@ -743,3 +754,7 @@ def upgrade_channels(all_channels: bool = False, sudo: bool = False) -> None:
                 check=False,
                 sudo=sudo,
             )
+            channel_updated = True
+
+    if not channel_updated:
+        logger.warning("'--upgrade(-all)' flag passed but no channels to update")

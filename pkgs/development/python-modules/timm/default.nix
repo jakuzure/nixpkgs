@@ -23,15 +23,28 @@
 
 buildPythonPackage (finalAttrs: {
   pname = "timm";
-  version = "1.0.26";
+  version = "1.0.27";
   pyproject = true;
+  __structuredAttrs = true;
 
   src = fetchFromGitHub {
     owner = "huggingface";
     repo = "pytorch-image-models";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-pbzDoNRRwz41b4X40yBp7oTcJ2e/Y2dKyj9XbEX5c34=";
+    hash = "sha256-Tur4niy89MyMJ8TD7+zBY6x/tmvtYDkruksf65KdTkE=";
   };
+
+  # Fix torch 2.11.0 compatibility
+  # AttributeError: 'AdamWLegacy' object has no attribute '_cuda_graph_capture_health_check'
+  postPatch = ''
+    substituteInPlace \
+      timm/optim/adopt.py \
+      timm/optim/adamw.py \
+      timm/optim/nadamw.py \
+      --replace-fail \
+        "_cuda_graph_capture_health_check" \
+        "_accelerator_graph_capture_health_check"
+  '';
 
   build-system = [ pdm-backend ];
 

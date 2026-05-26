@@ -6,14 +6,14 @@
 }:
 python3Packages.buildPythonApplication (finalAttrs: {
   pname = "ibtool";
-  version = "1.1.3";
+  version = "1.2.0";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "viraptor";
     repo = "ibtool";
     tag = finalAttrs.version;
-    hash = "sha256-O2CCuM34U5EbqgkFXs/vokM2Q1bv5mqBgFqfhDP463Y=";
+    hash = "sha256-vFjB+eDw8RP28UGzmc2Sbes8/qNEj1W5fzB6Lnjx6ZI=";
   };
 
   build-system = with python3Packages; [

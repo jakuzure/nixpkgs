@@ -2,7 +2,7 @@
   lib,
   stdenvNoCC,
   fetchFromGitHub,
-  nodejs_20,
+  nodejs,
   pnpm_9,
   fetchPnpmDeps,
   pnpmConfigHook,
@@ -13,13 +13,13 @@
 
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "openspec";
-  version = "1.2.0";
+  version = "1.3.1";
 
   src = fetchFromGitHub {
     owner = "Fission-AI";
     repo = "OpenSpec";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-DIMMOEVQ2FQj48WAF4S1IhxX5ChrFZll51CZ3bZNGHE=";
+    hash = "sha256-L4LBHVVtgMhSJm+IzZSYOR0UXPbvIRg4xiEV5urYxdI=";
   };
 
   pnpmDeps = fetchPnpmDeps {
@@ -30,7 +30,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   };
 
   nativeBuildInputs = [
-    nodejs_20
+    nodejs
     pnpmConfigHook
     pnpm_9
     makeWrapper
@@ -51,7 +51,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     mkdir -p $out/bin $out/lib/openspec
 
     substituteInPlace bin/openspec.js \
-      --replace '#!/usr/bin/env node' '#!${nodejs_20}/bin/node' \
+      --replace '#!/usr/bin/env node' '#!${nodejs}/bin/node' \
       --replace "../dist" "$out/lib/openspec/dist"
     install -Dm755 bin/openspec.js $out/bin/openspec
 
@@ -70,11 +70,16 @@ stdenvNoCC.mkDerivation (finalAttrs: {
       --zsh <($out/bin/openspec completion generate zsh)
   '';
 
+  passthru.updateScript = nix-update-script { };
+
   meta = {
     description = "AI-native system for spec-driven development";
     homepage = "https://github.com/Fission-AI/OpenSpec";
     license = lib.licenses.mit;
-    maintainers = with lib.maintainers; [ superherointj ];
+    maintainers = with lib.maintainers; [
+      kalbasit
+      superherointj
+    ];
     platforms = lib.platforms.all;
     mainProgram = "openspec";
   };
